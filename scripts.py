@@ -5,8 +5,11 @@ import time
 import datetime
 import json
 
+TOKEN_JSON=str(st.secrets["gcp_service_account"]).replace("'",'"')
 
-CREDENTIALS = service_account.Credentials.from_service_account_info(st.secrets["gcp_service_account"])
+TOKEN=json.loads(TOKEN_JSON, strict=False)
+
+CREDENTIALS = service_account.Credentials.from_service_account_info(TOKEN)
 
 CLIENT = bigquery.Client(credentials=CREDENTIALS, project=CREDENTIALS.project_id)
 
