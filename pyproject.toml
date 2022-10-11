@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "Validators extractor bigQ based"
+version = "0.1.0"
+description = "This project is Lido rewards extractor based on bigQuery dataset"
+authors = ["gregshestakov <gregshestakov@gmail.com >"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = ">3.9,<3.9.7 || >3.9.7,<4.0"
+streamlit = "^1.12.2"
+plotly = "^5.10.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
