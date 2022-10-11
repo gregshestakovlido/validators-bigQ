@@ -85,6 +85,10 @@ if st.button('Get info'):
 
 
 
+if st.button('Test'):
+    validators=scripts.get_validators_by_epoch()
+    st.table(validators.head(10))
+
 
 
 
