@@ -6,8 +6,7 @@ import datetime
 import json
 
 
-
-CREDENTIALS = service_account.Credentials.from_service_account_info(JCREDENTIALS = service_account.Credentials.from_service_account_info(st.secrets["gcp_service_account"]))
+CREDENTIALS = service_account.Credentials.from_service_account_info(st.secrets["gcp_service_account"])
 
 CLIENT = bigquery.Client(credentials=CREDENTIALS, project=CREDENTIALS.project_id)
 
