@@ -6,7 +6,12 @@ import datetime
 import json
 
 
-CREDENTIALS = service_account.Credentials.from_service_account_info(st.secrets["gcp_service_account"])
+TOKEN=st.secrets['dune_key']
+
+
+JSON_TOKEN=json.loads(TOKEN,strict=False)
+
+CREDENTIALS = service_account.Credentials.from_service_account_info(JSON_TOKEN)
 
 CLIENT = bigquery.Client(credentials=CREDENTIALS, project=CREDENTIALS.project_id)
 
