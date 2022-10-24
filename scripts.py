@@ -14,13 +14,22 @@ CREDENTIALS = service_account.Credentials.from_service_account_info(TOKEN)
 CLIENT = bigquery.Client(credentials=CREDENTIALS, project=CREDENTIALS.project_id)
 
 REWARDS_QUERY="""
-SELECT
-DATE_TRUNC(TIMESTAMP_SECONDS(1606824023 + (f_epoch * 12 * 32)),DAY) as epoch_date,
-count(nullif(sync_cometee_participation,0)) as count_sync_cometee_participation,
+with coefs as (
+  SELECT 
+f_epoch,
+f_target_correct_balance/f_active_balance as target_coef,
+f_head_correct_balance/f_active_balance as head_coef,
+f_attesting_balance/f_active_balance as source_coef
+
+ FROM `high-hue-328212.chaind.t_epoch_summaries` 
+)
+
+SELECT 
+DATE_TRUNC(TIMESTAMP_SECONDS(1606824023 + (rewards.f_epoch * 12 * 32)),DAY) as epoch_date,
 sum(reward_for_proposal) as total_rewards_for_proposal,
-sum(reward_for_source) as total_rewards_for_source,
-sum(reward_for_target) as total_rewards_for_target,
-sum(reward_for_head) as total_rewards_for_head,
+sum(reward_for_source*source_coef) as total_rewards_for_source,
+sum(reward_for_target*target_coef) as total_rewards_for_target,
+sum(reward_for_head*head_coef) as total_rewards_for_head,
 sum(reward_for_sync) as total_rewards_for_sync,
 sum(penalty_for_source) as total_penalty_for_source,
 sum(penalty_for_target) as total_penalty_for_target,
@@ -31,8 +40,8 @@ count(nullif(reward_for_proposal,0)) as count_proposals,
 count(nullif(missed_reward_for_proposal,0)) as count_missed_proposals,
 count(nullif(penalty_for_source,0)) as count_missed_for_source,
 count(nullif(penalty_for_target,0)) as count_missed_for_target
-FROM `high-hue-328212.chaind.mv_validators_rewards_per_epoch`
-where
+FROM `high-hue-328212.chaind.mv_validators_rewards_per_epoch` as rewards inner join coefs on coefs.f_epoch=rewards.f_epoch
+where 
 f_epoch between @start_epoch and @end_epoch
 and
 f_validator_index in (SELECT f_index FROM `high-hue-328212.chaind.t_operators` where f_operator_name=@operator_name)
