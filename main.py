@@ -5,18 +5,22 @@ import pandas as pd
 
 st.title('Validators performance exctractor')
 
-if 'val_NO_choice' not in st.session_state:
+if 'multiple_NO_choice' not in st.session_state:
     val_NO_list= []
-    st.session_state['val_NO_choice'] = val_NO_list
+    st.session_state['multiple_NO_choice'] = val_NO_list
 
-if 'val_choice' not in st.session_state:
+if 'raw_val_choice' not in st.session_state:
     val_list= []
-    st.session_state['val_choice'] = val_list
+    st.session_state['raw_val_choice'] = val_list
 
 if 'one_NO_choice' not in st.session_state:
     val_list= []
     st.session_state['one_NO_choice'] = val_list
 
+if 'val_choice' not in st.session_state:
+    val_list= []
+    st.session_state['val_choice'] = val_list
+    
 operator_list=['Allnodes',
  'Anyblock Analytics',
  'Blockdaemon',
@@ -123,21 +127,21 @@ if add_NO:
     choice['node_operator']=several_NO_select
     choice['start_date']= str(several_NO_start_date )
     choice['end_date']=str(several_NO_end_date)
-    st.session_state['val_NO_choice'].append(choice)
+    st.st.session_state['multiple_NO_choice'].append(choice)
 
 st.write('You already choose:')
-st.write(st.session_state['val_NO_choice'])
+st.write(st.session_state['multiple_NO_choice'])
 
 get_multiple_NO_info=st.button('Get info',key='multiple_NO_download')
 if get_multiple_NO_info:
     st.write('Start fetching data')
-    NOs_rewards_df=scripts.create_rewards_table(st.session_state['val_NO_choice'])
+    NOs_rewards_df=scripts.create_rewards_table(st.session_state['multiple_NO_choice'])
     processed_NOs_rewards_df=scripts.process_rewards_table(NOs_rewards_df)
     st.write(processed_NOs_rewards_df.head(10))
     csv_NOs_data_validators = processed_NOs_rewards_df.to_csv(index=False).encode('utf-8')
     st.download_button(label='Download info',
                            data=csv_NOs_data_validators,
-                           file_name=f'Multiple Nos data .csv',
+                           file_name=f'Multiple NOs data .csv',
                            mime='text/csv',
                            key='multiple_NO_download' )
 
