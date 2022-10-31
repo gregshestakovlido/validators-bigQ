@@ -108,6 +108,12 @@ left join active_vals on active_vals.activation_epoch=f_epoch
 left join all_vals on all_vals.deposit_epoch=f_epoch
 order by f_epoch asc
 """
+
+GET_VAL_INDEX_QUERY="""
+SELECT f_index FROM `high-hue-328212.chaind.t_validators` where f_public_key
+in unnest(
+"""
+
 def convert_date_to_epoch(date):
     epoch_ts=time.mktime(datetime.datetime.strptime(date, "%Y-%m-%d").timetuple())
     epoch= (epoch_ts-1606824023+10800)/(12*32)
