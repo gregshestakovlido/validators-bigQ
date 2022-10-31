@@ -127,7 +127,7 @@ if add_NO:
     choice['node_operator']=several_NO_select
     choice['start_date']= str(several_NO_start_date )
     choice['end_date']=str(several_NO_end_date)
-    st.st.session_state['multiple_NO_choice'].append(choice)
+    st.session_state['multiple_NO_choice'].append(choice)
 
 st.write('You already choose:')
 st.write(st.session_state['multiple_NO_choice'])
