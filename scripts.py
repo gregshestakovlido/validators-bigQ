@@ -81,7 +81,7 @@ count(nullif(penalty_for_target,0)) as count_missed_for_target
 FROM `high-hue-328212.chaind.mv_validators_rewards_per_epoch` as epoch_data
 inner join coefs on epoch_data.f_epoch = coefs.f_epoch
 inner join `high-hue-328212.chaind.t_validators` as val_info on epoch_data.f_validator_index=val_info.f_index
-where'''
+where '''
 
 VALIDATORS_QUERY="""
 with active_vals as (
