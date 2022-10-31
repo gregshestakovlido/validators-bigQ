@@ -97,6 +97,20 @@ python-versions = "*"
 test = ["flake8 (==3.7.8)", "hypothesis (==3.55.3)"]
 
 [[package]]
+name = "db-dtypes"
+version = "1.0.4"
+description = "Pandas Data Types for SQL systems (BigQuery, Spanner)"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+numpy = ">=1.16.6,<2.0dev"
+packaging = ">=17.0"
+pandas = ">=0.24.2,<2.0dev"
+pyarrow = ">=3.0.0,<10.0dev"
+
+[[package]]
 name = "decorator"
 version = "5.1.1"
 description = "Decorators for Humans"
@@ -785,7 +799,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "flake8 
 [metadata]
 lock-version = "1.1"
 python-versions = ">3.9,<3.9.7 || >3.9.7,<3.11"
-content-hash = "aa162a1c9ece978a59a447394b66c2ba4d3fe93637219a4abe61ab988c9608a7"
+content-hash = "8ce3e50828501689bf1ab13b2d357eba40cf3fe3b5c4c9604ef4907706bebdda"
 
 [metadata.files]
 altair = []
@@ -803,6 +817,7 @@ commonmark = [
     {file = "commonmark-0.9.1-py2.py3-none-any.whl", hash = "sha256:da2f38c92590f83de410ba1a3cbceafbc74fee9def35f9251ba9a971d6d66fd9"},
     {file = "commonmark-0.9.1.tar.gz", hash = "sha256:452f9dc859be7f06631ddcb328b6919c67984aca654e5fefb3914d54691aed60"},
 ]
+db-dtypes = []
 decorator = []
 entrypoints = []
 gitdb = []
