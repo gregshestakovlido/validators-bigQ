@@ -48,6 +48,13 @@ inner join  `high-hue-328212.chaind.t_operators` as node_operators on epoch_data
 where 
 """
 
+VALIDATOR_REWARDS_QUERY='''
+with coefs as(
+SELECT  
+f_epoch,
+f_attesting_balance/f_active_balance as source_coef,
+f_target_correct_balance/f_active_balance as target_coef,
+f_head_correct_balance/f_active_balance as head_coef
 
 FROM `high-hue-328212.chaind.t_epoch_summaries` 
 
