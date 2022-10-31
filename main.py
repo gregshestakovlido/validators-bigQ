@@ -156,11 +156,11 @@ vals_start_date = st.date_input("Choose start date",key='vals_start_date')
 vals_end_date = st.date_input("Choose end date",key='vals_end_date')
 confirm_dates=st.button('Confirm dates',key='val_index_confirm_dates')
 if confirm_dates:
-    vals_chose_dict = {}
-    vals_chose_dict['start_date'] = str(vals_start_date)
-    vals_chose_dict['end_date'] = str(vals_end_date)
+    confirmed_dates = {}
+    confirmed_dates['start_date'] = str(vals_start_date)
+    confirmed_dates['end_date'] = str(vals_end_date)
     st.write('You choose following dates:')
-    st.write(vals_chose_dict)
+    st.write(confirmed_dates)
 val_index=st.number_input('Insert validator INDEX',key='val_index_input',step=1)
 add_val_index=st.button('Add index',key='val_index_add')
 val_pubkey=st.text_input('Insert validator PUBKEY',key='val_pubkey_input')
@@ -176,6 +176,9 @@ st.write('You already added:')
 st.write(st.session_state['raw_val_choice'])
 get_info_vals=st.button('Get info',key='get_vals_info')
 if get_info_vals:
+    vals_chose_dict = {}
+    vals_chose_dict['start_date'] = str(vals_start_date)
+    vals_chose_dict['end_date'] = str(vals_end_date)
     vals_chose_dict['val_choice']=st.session_state['raw_val_choice']
     st.session_state['val_choice'].append(vals_chose_dict)
     vals_query=scripts.create_query_for_vals(st.session_state['val_choice'])
