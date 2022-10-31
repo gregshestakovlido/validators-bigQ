@@ -49,6 +49,32 @@ where
 """
 
 
+FROM `high-hue-328212.chaind.t_epoch_summaries` 
+
+)
+
+SELECT 
+DATE_TRUNC(TIMESTAMP_SECONDS(1606824023 + (epoch_data.f_epoch * 12 * 32)),DAY) as epoch_date,
+val_info.f_public_key,
+epoch_data.f_validator_index,
+sum(reward_for_proposal) as total_rewards_for_proposal,
+sum(reward_for_source*source_coef) as total_rewards_for_source,
+sum(reward_for_target*target_coef) as total_rewards_for_target,
+sum(reward_for_head*head_coef) as total_rewards_for_head,
+sum(reward_for_sync) as total_rewards_for_sync,
+sum(penalty_for_source) as total_penalty_for_source,
+sum(penalty_for_target) as total_penalty_for_target,
+sum(penalty_for_sync) as total_penalty_for_sync,
+sum(missed_reward_for_head) as total_missed_reward_for_head,
+sum(missed_reward_for_proposal) as total_missed_reward_for_proposal,
+count(nullif(reward_for_proposal,0)) as count_proposals,
+count(nullif(missed_reward_for_proposal,0)) as count_missed_proposals,
+count(nullif(penalty_for_source,0)) as count_missed_for_source,
+count(nullif(penalty_for_target,0)) as count_missed_for_target
+FROM `high-hue-328212.chaind.mv_validators_rewards_per_epoch` as epoch_data
+inner join coefs on epoch_data.f_epoch = coefs.f_epoch
+inner join `high-hue-328212.chaind.t_validators` as val_info on epoch_data.f_validator_index=val_info.f_index
+where'''
 
 VALIDATORS_QUERY="""
 with active_vals as (
@@ -141,4 +167,47 @@ def create_where_clause(choise_dict):
 def create_query(choice_dict):
     where_clauses=create_where_clause(choice_dict)
     final_query=REWARDS_QUERY+where_clauses
+    return final_query
+
+
+def convert_pubkey_to_normal(pubkey):
+    normal_pubkey='\\'+pubkey[1:]
+    return normal_pubkey
+
+def create_index_from_pubkey(pubkey_list):
+    normal_pubkeys=[]
+    for pubkey in range(len(pubkey_list)):
+        normal_pubkeys.append(convert_pubkey_to_normal(pubkey_list[pubkey]))
+    final_query=GET_VAL_INDEX_QUERY+str(normal_pubkeys)+')'
+    raw_index=CLIENT.query(final_query)
+    index_df=raw_index.to_dataframe()
+    index_list=[]
+    for index in range(len(index_df)):
+        index_list.append(index_df.iloc[index,0])
+    return index_list
+
+def create_list_of_indexes(mixed_list):
+    pubkey_list=[]
+    final_list=[]
+    for val in mixed_list:
+        if type(val)==str:
+            pubkey_list.append(val)
+        else:
+            final_list.append(val)
+    index_from_pubkeys=create_index_from_pubkey(pubkey_list)
+    final_list +=index_from_pubkeys
+    return final_list
+
+
+def create_where_clause_vals(choise_dict):
+    start_epoch=convert_date_to_epoch(choise_dict[0]['start_date'])+1
+    end_epoch=convert_date_to_epoch(choise_dict[0]['end_date'])+225
+    val_list=create_list_of_indexes(choise_dict[0]['val_choice'])
+    where_clause=f'f_index in unnest({val_list}) and epoch_data.f_epoch between {start_epoch} and {end_epoch} group by 1,2,3'
+    return where_clause
+
+
+def create_query_for_vals(vals_choice_dict):
+    where_clause=create_where_clause_vals(vals_choice_dict)
+    final_query=VALIDATOR_REWARDS_QUERY+where_clause
     return final_query
